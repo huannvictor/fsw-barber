@@ -10,7 +10,7 @@ export default function Home() {
       <Header />
       <div className="p-5">
         <h2 className="text-xl font-bold">Olá, Huann!</h2>
-        <p>Terça-feira, 13 de agosto de 2024</p>
+        <p>Terça-feira, 13 de agosto.</p>
 
         <div className="mt-6 flex items-center gap-2">
           <Input placeholder="Faça sua busca..." />
@@ -19,11 +19,11 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="relative h-[150] w-full">
+        <div className="relative mt-6 h-[150px] w-full">
           <Image
-            alt="banner"
+            alt="agende nos melhores com FSW barber"
             src="/banner-01.png"
-            className="object-cover"
+            className="rounded-xl object-cover"
             fill
           />
         </div>
