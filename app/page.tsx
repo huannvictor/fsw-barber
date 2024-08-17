@@ -6,8 +6,14 @@ import { SearchIcon } from "lucide-react"
 import { Card, CardContent } from "./_components/ui/card"
 import { Badge } from "./_components/ui/badge"
 import { Avatar, AvatarImage } from "./_components/ui/avatar"
+import { db } from "./_lib/prisma"
+import BarbershopItem from "./_components/barbershop-item"
 
-export default function Home() {
+const Home = async () => {
+  // call database
+  const barbershops = await db.barbershop.findMany({})
+  // console.log(barbershops)
+
   return (
     <div>
       <Header />
@@ -61,7 +67,17 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
+
+        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+          recomendados
+        </h2>
+        <div className="flex gap-4 overflow-x-scroll [&::-webkit-scrollbar]:scroll-smooth">
+          {barbershops.map((barbershop) => (
+            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+          ))}
+        </div>
       </div>
     </div>
   )
 }
+export default Home
