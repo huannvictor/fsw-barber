@@ -8,6 +8,7 @@ import { Badge } from "./_components/ui/badge"
 import { Avatar, AvatarImage } from "./_components/ui/avatar"
 import { db } from "./_lib/prisma"
 import BarbershopItem from "./_components/barbershop-item"
+import { quickSearchOptions } from "./_constants/search"
 
 const Home = async () => {
   // call database
@@ -15,6 +16,7 @@ const Home = async () => {
   const popularBarbershops = await db.barbershop.findMany({
     orderBy: { name: "desc" },
   })
+
   return (
     <div>
       <Header />
@@ -29,6 +31,21 @@ const Home = async () => {
           <Button>
             <SearchIcon />
           </Button>
+        </div>
+
+        {/* FAST SEARCH */}
+        <div className="mt-6 flex gap-3 overflow-x-scroll pb-3 scrollbar scrollbar-thumb-gray-700/50">
+          {quickSearchOptions.map((option) => (
+            <Button className="gap-2" variant="secondary" key={option.title}>
+              <Image
+                src={option.imageUrl}
+                width={16}
+                height={16}
+                alt={option.title}
+              />
+              {option.title}
+            </Button>
+          ))}
         </div>
 
         {/* IMAGE */}
@@ -72,7 +89,7 @@ const Home = async () => {
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           recomendados
         </h2>
-        <div className="flex gap-4 overflow-x-scroll [&::-webkit-scrollbar]:scroll-smooth">
+        <div className="flex gap-4 overflow-x-scroll pb-2 scrollbar scrollbar-thumb-gray-700/50">
           {barbershops.map((barbershop) => (
             <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
@@ -81,7 +98,7 @@ const Home = async () => {
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           populares
         </h2>
-        <div className="flex gap-4 overflow-x-scroll [&::-webkit-scrollbar]:scroll-smooth">
+        <div className="flex gap-4 overflow-x-scroll pb-2 scrollbar scrollbar-thumb-gray-700/50">
           {popularBarbershops.map((barbershop) => (
             <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
