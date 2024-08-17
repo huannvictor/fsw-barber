@@ -34,8 +34,11 @@ export default function Home() {
           />
         </div>
 
-        {/* APPOINTMENT */}
-        <Card className="mt-6">
+        {/* BOOKING */}
+        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+          agendamentos
+        </h2>
+        <Card>
           <CardContent className="flex justify-between p-0">
             {/* LEFT CONTENT */}
             <div className="flex flex-col gap-2 py-5 pl-5">
