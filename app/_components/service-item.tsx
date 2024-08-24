@@ -16,7 +16,10 @@ import {
 import { Calendar } from "./ui/calendar"
 import { ptBR } from "date-fns/locale"
 import { useState } from "react"
-import { format } from "date-fns"
+import { format, set } from "date-fns"
+import { createBooking } from "../_actions/create-booking"
+import { toast } from "sonner"
+import { useSession } from "next-auth/react"
 
 interface ServiceItemProps {
   service: BarbershopService
@@ -48,6 +51,7 @@ const TIME_LIST = [
 ]
 
 const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
+  const { data } = useSession()
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
     undefined,
@@ -59,6 +63,34 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time)
+  }
+
+  const handleCreateBooking = async () => {
+    try {
+      if (!data?.user as any) {
+        toast.warning("Faça login para poder reservar")
+        return
+      }
+      if (!selectedDay || !selectedTime) return
+
+      const hours = Number(selectedTime.split(":")[0])
+      const minutes = Number(selectedTime.split(":")[1])
+      const newDate = set(selectedDay, {
+        minutes,
+        hours,
+      })
+
+      await createBooking({
+        serviceId: service.id,
+        userId: (data?.user as any).id,
+        date: newDate,
+      })
+
+      toast.success("Reserva criada com sucesso!")
+    } catch (error) {
+      console.log(error)
+      toast.error("Erro ao criar reserva!")
+    }
   }
 
   return (
@@ -92,7 +124,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                 </Button>
               </SheetTrigger>
 
-              <SheetContent className="px-0">
+              <SheetContent className="overflow-y-auto px-0 scrollbar-thin scrollbar-thumb-gray-700/50">
                 <SheetHeader>
                   <SheetTitle>Fazer Reserva</SheetTitle>
                 </SheetHeader>
@@ -181,9 +213,14 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                   </div>
                 )}
 
-                <SheetFooter className="px-5">
+                <SheetFooter className="mt-5 px-5">
                   <SheetClose asChild>
-                    <Button type="submit">Confirmar</Button>
+                    <Button
+                      onClick={handleCreateBooking}
+                      disabled={!selectedDay || !selectedTime}
+                    >
+                      Confirmar
+                    </Button>
                   </SheetClose>
                 </SheetFooter>
               </SheetContent>
