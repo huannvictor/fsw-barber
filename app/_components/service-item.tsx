@@ -48,16 +48,21 @@ const TIME_LIST = [
   "17:00",
   "17:30",
   "18:00",
-  "18:30",
-  "19:00",
-  "19:30",
-  "20:00",
 ]
 
-const getTimeList = (booking: Booking[]) => {
+const getTimeList = (booking: Booking[], selectedDay: Date) => {
+  const now = new Date()
+
   return TIME_LIST.filter((time) => {
-    const hour = Number(time.split(":")[0])
-    const minutes = Number(time.split(":")[1])
+    const [hour, minutes] = time.split(":").map(Number)
+    const timeToCompare = new Date(selectedDay || now)
+    timeToCompare.setHours(hour, minutes, 0, 0)
+
+    const isPastTimeOnSelectedDay =
+      selectedDay &&
+      format(selectedDay, "yyyy-MM-dd") === format(now, "yyyy-MM-dd") &&
+      timeToCompare <= now
+    if (isPastTimeOnSelectedDay) return false
 
     const hasBookingOnCurrentTime = booking.some(
       (booking) =>
@@ -212,7 +217,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
 
                 {selectedDay && (
                   <div className="flex gap-3 overflow-x-auto p-5 scrollbar scrollbar-thumb-gray-700/50">
-                    {getTimeList(dayBookings).map((time) => (
+                    {getTimeList(dayBookings, selectedDay).map((time) => (
                       <Button
                         key={time}
                         variant={selectedTime === time ? "default" : "outline"}
