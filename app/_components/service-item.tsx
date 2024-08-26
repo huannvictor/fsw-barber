@@ -51,9 +51,8 @@ const TIME_LIST = [
 ]
 
 const getTimeList = (booking: Booking[], selectedDay: Date) => {
-  const now = new Date()
-
   return TIME_LIST.filter((time) => {
+    const now = new Date()
     const [hour, minutes] = time.split(":").map(Number)
     const timeToCompare = new Date(selectedDay || now)
     timeToCompare.setHours(hour, minutes, 0, 0)
@@ -119,8 +118,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
       }
       if (!selectedDay || !selectedTime) return
 
-      const hours = Number(selectedTime.split(":")[0])
-      const minutes = Number(selectedTime.split(":")[1])
+      const [hours, minutes] = selectedTime.split(":").map(Number)
       const newDate = set(selectedDay, {
         minutes,
         hours,
@@ -217,16 +215,24 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
 
                 {selectedDay && (
                   <div className="flex gap-3 overflow-x-auto p-5 scrollbar scrollbar-thumb-gray-700/50">
-                    {getTimeList(dayBookings, selectedDay).map((time) => (
-                      <Button
-                        key={time}
-                        variant={selectedTime === time ? "default" : "outline"}
-                        className="rounded-full"
-                        onClick={() => handleTimeSelect(time)}
-                      >
-                        {time}
-                      </Button>
-                    ))}
+                    {getTimeList(dayBookings, selectedDay).length <= 0 ? (
+                      <p className="text-sm italic text-gray-400">
+                        Sem horários para hoje
+                      </p>
+                    ) : (
+                      getTimeList(dayBookings, selectedDay).map((time) => (
+                        <Button
+                          key={time}
+                          variant={
+                            selectedTime === time ? "default" : "outline"
+                          }
+                          className="rounded-full"
+                          onClick={() => handleTimeSelect(time)}
+                        >
+                          {time}
+                        </Button>
+                      ))
+                    )}
                   </div>
                 )}
 
